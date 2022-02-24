@@ -1,7 +1,7 @@
 #
 # New_Listerner.psm1
 #
-Global:Function new-Listerner()
+Function:Global New-Listerner()
 {
 	Write-Host "test"	
 }
