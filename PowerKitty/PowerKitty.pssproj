@@ -7,6 +7,11 @@
     <RootNamespace>MyApplication</RootNamespace>
     <AssemblyName>MyApplication</AssemblyName>
     <Name>PowerKitty</Name>
+    <ManifestPath>$(OutDir)\$(ProjectName).psd1</ManifestPath>
+    <Author>WillBambi</Author>
+    <CompanyName>Bambi.lol</CompanyName>
+    <Guid>ed5fc331-b152-4375-8c1a-dcf0e6488533</Guid>
+    <ProcessorArchitecture />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +49,7 @@
     <Compile Include="core\New-Agent.psm1" />
     <Compile Include="core\New-Listerner.psm1" />
     <Compile Include="PowerKitty.psd1" />
-    <Compile Include="PowerKitty.psm1" />
+    <Compile Include="PowerKitty.ps1" />
     <Compile Include="PowerKitty.tests.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
