@@ -1,5 +1,5 @@
 <#
-	My Function
+	Loader script
 #>
 function Get-Function {
 
