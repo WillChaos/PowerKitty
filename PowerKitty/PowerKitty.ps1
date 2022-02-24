@@ -78,7 +78,7 @@ Function Invoke-Loader
   foreach($Zippeditem in $ZippedContent)
   {
     # if the zip items contain a powershell file or module, do the below (that isnt the main module
-    if(($Zippeditem.FullName -like "*Ps1") -or ($Zippeditem.FullName -like "*psm1") -and ($Zippeditem.FullName -notlike "*PowerKitty.psm1"))
+    if(($Zippeditem.FullName -like "*Ps1") -or ($Zippeditem.FullName -like "*psm1") -and ($Zippeditem.FullName -notlike "*PowerKitty.ps1"))
     {
         # open zip item type in memory - store string based contents into a file
         $EntryReader = New-Object System.IO.StreamReader($Zippeditem.Open())
