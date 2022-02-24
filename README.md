@@ -1,1 +1,12 @@
 PowerKitty
+
+# Launch : one liner
+> Invoke-Expression (IWR https://raw.githubusercontent.com/WillChaos/PowerKitty/master/PowerKitty/PowerKitty.ps1).content
+
+# Launch : one liner (encoded)
+powershell.exe -ExecutionPolicy Bypass -EncodedCommand "SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAKABJAFcAUgAgAGgAdAB0AHAAcwA6AC8ALwByAGEAdwAuAGcAaQB0AGgAdQBiAHUAcwBlAHIAYwBvAG4AdABlAG4AdAAuAGMAbwBtAC8AVwBpAGwAbABDAGgAYQBvAHMALwBQAG8AdwBlAHIASwBpAHQAdAB5AC8AbQBhAHMAdABlAHIALwBQAG
+8AdwBlAHIASwBpAHQAdAB5AC8AUABvAHcAZQByAEsAaQB0AHQAeQAuAHAAcwAxACkALgBjAG8AbgB0AGUAbgB0AA==" -NoExit
+
+# Launch : one liner (encoded) (powershell 7)
+pwsh -ExecutionPolicy Bypass -EncodedCommand "SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAKABJAFcAUgAgAGgAdAB0AHAAcwA6AC8ALwByAGEAdwAuAGcAaQB0AGgAdQBiAHUAcwBlAHIAYwBvAG4AdABlAG4AdAAuAGMAbwBtAC8AVwBpAGwAbABDAGgAYQBvAHMALwBQAG8AdwBlAHIASwBpAHQAdAB5AC8AbQBhAHMAdABlAHIALwBQAG
+8AdwBlAHIASwBpAHQAdAB5AC8AUABvAHcAZQByAEsAaQB0AHQAeQAuAHAAcwAxACkALgBjAG8AbgB0AGUAbgB0AA==" -NoExit
