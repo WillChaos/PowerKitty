@@ -50,7 +50,6 @@
     <Compile Include="core\New-Listerner.psm1" />
     <Compile Include="PowerKitty.psd1" />
     <Compile Include="PowerKitty.ps1" />
-    <Compile Include="PowerKitty.tests.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />

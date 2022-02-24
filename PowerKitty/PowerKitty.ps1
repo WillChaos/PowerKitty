@@ -1,4 +1,3 @@
-#requires -version 5
 <#
 .SYNOPSIS
   
@@ -77,29 +76,16 @@ Function Invoke-Loader
   # opperate on each item in the zip
   foreach($Zippeditem in $ZippedContent)
   {
-    # if the zip items contain a powershell file or module, do the below (that isnt the main module
+    # if the zip items contain a powershell file or module (that isnt the main module)
     if(($Zippeditem.FullName -like "*Ps1") -or ($Zippeditem.FullName -like "*psm1") -and ($Zippeditem.FullName -notlike "*PowerKitty.ps1"))
     {
         # open zip item type in memory - store string based contents into a file
         $EntryReader = New-Object System.IO.StreamReader($Zippeditem.Open())
         $ItemContent  = $EntryReader.ReadToEnd()
 
-        # handle Os dependant scripts - import only as NIX script if specified
-        if($ItemContent -like "*OS:NIX*" -and $CurrentOS -notlike "Unix")
-        {
-            # The module is a linux module but we are on windows. skip.
-        }
-        if($ItemContent -like "*OS:WIN*" -and $CurrentOS -notlike "Win32NT")
-        {
-            # The module is a Windows module but we are on Linux. skip.
-        }
-        else
-        {
-            # We either havent sepcified the OS type in the module, or - 
-            # We have specified it and we are on the correct OS. either way, Import!
-            Write-Host "-[>] Importing module: "$Zippeditem.FullName  -ForegroundColor DarkGray
-            Invoke-Expression $ItemContent
-        } 
+        # import into memory
+        Write-Host "-[>] Importing module: "$Zippeditem.FullName  -ForegroundColor DarkGray
+        Invoke-Expression $ItemContent
     }
   }
 }
