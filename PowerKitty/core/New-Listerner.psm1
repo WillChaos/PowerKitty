@@ -3,5 +3,22 @@
 #
 Function Global:New-Listerner()
 {
-	Write-Host "test"	
+	param
+	(
+		[Parameter()]
+		[String]$ListerName,
+
+		[Parameter()]
+		[String]$LHOST,
+
+		[Parameter()]
+		[Int]$LPORT
+	)
+
+	return [pscustomobject]@{
+		Name = $ListerName
+		UUID = (New-Guid).Guid
+		LHOST = $LHOST
+		LPORT = $LPORT
+	}
 }
