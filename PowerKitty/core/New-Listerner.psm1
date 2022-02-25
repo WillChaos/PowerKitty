@@ -12,7 +12,7 @@ Function Global:New-Listerner()
 		[String]$LHOST,
 
 		[Parameter()]
-		[int64]$LPORT
+		[System.Int64]$LPORT
 	)
 
 	# Create a template listerner object
