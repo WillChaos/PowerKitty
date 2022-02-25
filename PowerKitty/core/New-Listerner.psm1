@@ -9,10 +9,10 @@ Function Global:New-Listerner()
 		[String]$ListerName,
 
 		[Parameter()]
-		[Uint64]$LHOST,
+		[Long]$LHOST,
 
 		[Parameter()]
-		[Uint64]$LPORT
+		[short]$LPORT
 	)
 
 	# Create a template listerner object
