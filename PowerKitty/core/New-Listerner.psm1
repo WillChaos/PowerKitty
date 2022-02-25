@@ -9,7 +9,7 @@ Function Global:New-Listerner()
 		[String]$ListerName,
 
 		[Parameter()]
-		[String]$LHOST,
+		[Uint64]$LHOST,
 
 		[Parameter()]
 		[Uint64]$LPORT
