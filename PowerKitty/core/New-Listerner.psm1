@@ -17,7 +17,7 @@ Function Global:New-Listerner()
 
 	# If global lister object doesnt exist,or is null - create one
 	if(!($Global:ListernerPool)){
-		$Global:ListernerPool = @()
+		[pscustomobject]$Global:ListernerPool = @{}
 	}
 
 	# Create a template listerner object
