@@ -41,7 +41,7 @@ Function Global:New-Listerner()
 
 		# Build a simple TCP listerner
 		[console]::Title = ("Server: $LHOST : $LPORT")
-		$endpoint        = new-object System.Net.IPEndPoint ($LHOST, $LPORT)
+		$endpoint        = new-object System.Net.IPEndPoint ([system.net.ipaddress]$LHOST, $LPORT)
 		$listener        = new-object System.Net.Sockets.TcpListener $endpoint
 		$listener.start()
 		$client          = $listener.AcceptTcpClient()
