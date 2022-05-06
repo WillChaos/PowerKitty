@@ -15,7 +15,7 @@ Function Global:Get-Listerner()
 		[String]$LHOST,
 
 		[Parameter()]
-		[long]$LPORT,
+		[long]$LPORT
 
 	)
 
