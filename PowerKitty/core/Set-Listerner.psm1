@@ -21,7 +21,7 @@ Function Global:Set-Listerner()
 
 		# modifiable 
 		[Parameter()]
-		[object]$RAWAGENT,
+		[object]$RAWAGENT
     )
 
 	Process
