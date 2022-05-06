@@ -17,11 +17,11 @@ Function Global:New-Listerner()
 
 	# If global lister object doesnt exist,or is null - create one
 	if(!($Global:ListernerPool)){
-		[pscustomobject]$Global:ListernerPool = @{}
+		$Global:ListernerPool = @()
 	}
 
 	# Create a template listerner object
-	[pscustomobject]$obj = @{
+	$obj = [pscustomobject]@{
 		Name  = $ListerName
 		UUID  = (New-Guid).Guid
 		LHOST = $LHOST
