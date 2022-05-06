@@ -9,11 +9,11 @@ Function Global:Set-Listerner()
     (
 		# read only
 		[Parameter()]
-		[Object]$UUID
+		[Object]$UUID,
 
 		# modifiable 
         [Parameter()]
-		[Object]$RAWSOCK
+		[Object]$RAWSOCK,
 
 		# modifiable 
 		[Parameter()]
