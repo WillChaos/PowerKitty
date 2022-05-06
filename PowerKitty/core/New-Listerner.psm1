@@ -20,36 +20,59 @@ Function Global:New-Listerner()
 		$Global:ListernerPool = @()
 	}
 
+	# Build a simple TCP listerner
+	[console]::Title = ("Server: $LHOST : $LPORT")
+	$endpoint        = new-object System.Net.IPEndPoint ($LHOST, $LPORT)
+	$listener        = new-object System.Net.Sockets.TcpListener $endpoint
+	$listener.start()
+
 	# Create a template listerner object
 	$obj = [pscustomobject]@{
 		Name  = $ListerName
 		UUID  = (New-Guid).Guid
 		LHOST = $LHOST
 		LPORT = $LPORT
+		RAWSOCK = $listener
+		AGENTCOUNT = 0
+		RAWAGENT = $null
 	}
 
 	# add listerner psobject to array
 	$Global:ListernerPool += $obj
 
-	# build a runspace
-	#$Runspace            = [runspacefactory]::CreateRunspace()
-	#$PowerShell          = [powershell]::Create()
-	#$PowerShell.runspace = $Runspace
-	#$Runspace.Open()
+	# add a runspace here (yes we are nesting)
+	# add it once the listerner works. when its working, we can shove it into the background so the powershell terminal is free again.
 
-	#[void]$PowerShell.AddScript({
+	# continue accepting socket connections until object no longer exists
+	while(Get-Listerner -UUID ($obj.UUID.toString()))
+	{
+		# build a runspace
+		[void]$PowerShell.AddScript({
+			$Runspace            = [runspacefactory]::CreateRunspace()
+			$PowerShell          = [powershell]::Create()
+			$PowerShell.runspace = $Runspace
+			$Runspace.Open()
 
-		# Build a simple TCP listerner
-		[console]::Title = ("Server: $LHOST : $LPORT")
-		$endpoint        = new-object System.Net.IPEndPoint ($LHOST, $LPORT)
-		$listener        = new-object System.Net.Sockets.TcpListener $endpoint
-		$listener.start()
-		$client          = $listener.AcceptTcpClient()
+			# begin accepting connections
+			$client          = $listener.AcceptTcpClient()
+			
+			# upgrade agent (maybe auth - tty etc
+				# TODO
 
-	#})
+			# add agent to listerner
+			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
+			$agentCount    = $thisListerner.AGENTCOUNT++
+			$agents        = $thisListerner.RAWAGENTS += $client
+			Get-Listerner -UUID ($obj.UUID.toString()) | Set-Listerner -RAWAGENT $agents  -AGENTCOUNT $agentCount
 
-	#$AsyncObject = $PowerShell.BeginInvoke()
-	#$AsyncObject
+			# small sleep to not thrash CPU
+			Start-Sleep -Milliseconds 100
+
+
+		})
+	}
+	$AsyncObject = $PowerShell.BeginInvoke()
+
 
 	
 

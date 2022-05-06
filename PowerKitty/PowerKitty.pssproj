@@ -48,6 +48,7 @@
     <Compile Include="core\Invoke-RemoteExploit.psm1" />
     <Compile Include="core\New-Agent.psm1" />
     <Compile Include="core\New-Listerner.psm1" />
+    <Compile Include="core\Set-Listerner.psm1" />
     <Compile Include="PowerKitty.psd1" />
     <Compile Include="PowerKitty.ps1" />
   </ItemGroup>
