@@ -47,11 +47,11 @@ Function Global:New-Listerner()
 	while(Get-Listerner -UUID ($obj.UUID.toString()))
 	{
 		# build a runspace
+		$Runspace            = [runspacefactory]::CreateRunspace()
+		$PowerShell          = [powershell]::Create()
+		$PowerShell.runspace = $Runspace
+		$Runspace.Open()
 		[void]$PowerShell.AddScript({
-			$Runspace            = [runspacefactory]::CreateRunspace()
-			$PowerShell          = [powershell]::Create()
-			$PowerShell.runspace = $Runspace
-			$Runspace.Open()
 
 			# begin accepting connections
 			$client          = $listener.AcceptTcpClient()
@@ -67,14 +67,12 @@ Function Global:New-Listerner()
 
 			# small sleep to not thrash CPU
 			Start-Sleep -Milliseconds 100
-
-
 		})
+
+		$AsyncObject = $PowerShell.BeginInvoke()
 	}
-	$AsyncObject = $PowerShell.BeginInvoke()
-
-
 	
+
 
 	
 }
