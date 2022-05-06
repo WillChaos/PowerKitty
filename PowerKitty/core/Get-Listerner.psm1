@@ -20,9 +20,9 @@ Function Global:Get-Listerner()
 	)
 
 	$Global:ListernerPool | Where-Object {
-		$_.UUID -like "*$UID*" -and
-		$_.Name -like "*$Name*" -and
-		$_.LHOST -like "*$LHOST*" -and
+		$_.UUID -like "*$UID*" -or
+		$_.Name -like "*$Name*" -or
+		$_.LHOST -like "*$LHOST*" -or
 		$_.LPORT -like "*$LPORT*" 
 	}
 }
