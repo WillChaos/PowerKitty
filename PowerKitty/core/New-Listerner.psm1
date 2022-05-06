@@ -32,12 +32,12 @@ Function Global:New-Listerner()
 	$Global:ListernerPool += $obj
 
 	# build a runspace
-	$Runspace            = [runspacefactory]::CreateRunspace()
-	$PowerShell          = [powershell]::Create()
-	$PowerShell.runspace = $Runspace
-	$Runspace.Open()
+	#$Runspace            = [runspacefactory]::CreateRunspace()
+	#$PowerShell          = [powershell]::Create()
+	#$PowerShell.runspace = $Runspace
+	#$Runspace.Open()
 
-	[void]$PowerShell.AddScript({
+	#[void]$PowerShell.AddScript({
 
 		# Build a simple TCP listerner
 		[console]::Title = ("Server: $LHOST : $LPORT")
@@ -46,10 +46,10 @@ Function Global:New-Listerner()
 		$listener.start()
 		$client          = $listener.AcceptTcpClient()
 
-	})
+	#})
 
-	$AsyncObject = $PowerShell.BeginInvoke()
-	$AsyncObject
+	#$AsyncObject = $PowerShell.BeginInvoke()
+	#$AsyncObject
 
 	
 
