@@ -21,7 +21,7 @@ Function Global:New-Listerner()
 	}
 
 	# Create a template listerner object
-	[pscustomobject]$obj@{
+	[pscustomobject]$obj = @{
 		Name  = $ListerName
 		UUID  = (New-Guid).Guid
 		LHOST = $LHOST
