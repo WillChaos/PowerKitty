@@ -11,6 +11,6 @@ Function Global:Get-Listerner()
 
 	)
 
-	$Global:ListernerPool | Where-Object {$_.UID -like "*$UID*"}
+	$Global:ListernerPool | Where-Object {$_.UUID -like "*$UID*"}
 
 }
