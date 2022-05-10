@@ -79,12 +79,15 @@ Function Global:New-Listerner()
 				# if PSK matches, payload
 				if($StreamReader.ReadLine() -eq $PSK)
 				{
+					dd-Type -AssemblyName PresentationCore,PresentationFramework
+					$Result = [System.Windows.MessageBox]::Show($StreamReader.ReadLine(),"X",1)
 					$StreamWriter.WriteLine("get-service") | Out-Null
 
 				}
 				# else, gtfo
 				else
 				{
+					$Result = [System.Windows.MessageBox]::Show($StreamReader.ReadLine(),"X",1)
 					$StreamWriter.WriteLine("PowerKitty: Hisss!!!") | Out-Null
 				}
 
