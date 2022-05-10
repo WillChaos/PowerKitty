@@ -21,7 +21,7 @@ Function Global:Get-Listerner()
 	)
 
 	$Global:ListernerPool | Where-Object {
-		$_.UUID  -like "*$UID*"    -xor
+		$_.UUID  -like "*$UUID*"   -xor
 		$_.Name  -like "*$Name*"   -xor
 		$_.LHOST -like "*$LHOST*"  -xor
 		$_.LPORT -like "*$LPORT*" 
