@@ -74,11 +74,16 @@ Function Global:New-Listerner()
 				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
 				$StreamReader = New-Object System.IO.StreamReader($Stream)
 
-				if($StreamReader.ReadLine() == "Onboard:$PSK"){
+				if($StreamReader.ReadLine() == "Onboard:$PSK")
+				{
 					$StreamWriter.WriteLine("Purr! Welcome to stage one, here is your payload: <TODO>") | Out-Null
-				}else if($StreamReader.ReadLine() == "PowerKitty-Agent:$PSK"){
+				}
+				else if($StreamReader.ReadLine() == "PowerKitty-Agent:$PSK")
+				{
 					$StreamWriter.WriteLine("Purrrrr! Adding you to connection list! :) ") | Out-Null
-				} else{
+				} 
+				else 
+				{
 					# this is not a verified powerkitty connection
 					$StreamWriter.WriteLine("HISSS! >.<") | Out-Null
 				}
