@@ -44,9 +44,9 @@ Function Global:New-Listerner()
 	# add it once the listerner works. when its working, we can shove it into the background so the powershell terminal is free again.
 
 	# continue accepting socket connections until object no longer exists
-	while(Get-Listerner -UUID ($obj.UUID.toString()))
+	while(Get-Listerner -UUID ($obj.UUID))
 	{
-
+		"1"
 		# build a runspace
 		$Runspace            = [runspacefactory]::CreateRunspace()
 		$PowerShell          = [powershell]::Create()
@@ -70,16 +70,16 @@ Function Global:New-Listerner()
 		    $StreamWriter.Close()
 			
 		})
-
+		"2"
 		$AsyncObject = $PowerShell.BeginInvoke()
-
+		"3"
 		# small sleep to not thrash CPU
 	    Start-Sleep -Milliseconds 100
+		"4"
+		
 	}
 	$listener.Stop();
-
+	"5"
 	
 
-
-	
 }
