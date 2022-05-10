@@ -56,14 +56,18 @@ Function Global:New-Listerner()
 			# begin accepting connections
 			$client          = $listener.AcceptTcpClient()
 			
-			# upgrade agent (maybe auth - tty etc
-				# TODO
-
 			# add agent to listerner
 			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
 			$agentCount    = $thisListerner.AGENTCOUNT++
 			$agents        = $thisListerner.RAWAGENTS += $client
 			Get-Listerner -UUID ($obj.UUID.toString()) | Set-Listerner -RAWAGENT $agents  -AGENTCOUNT $agentCount
+
+			
+			# upgrade agent (maybe auth - tty etc)
+			$Stream = $client.GetStream()
+			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+			$StreamWriter.AutoFlush()
+			$StreamWriter.WriteLine("TEST")
 
 			# small sleep to not thrash CPU
 			Start-Sleep -Milliseconds 100
