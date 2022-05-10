@@ -47,7 +47,13 @@ Function Global:New-Listerner()
 	while(Get-Listerner -UUID ($obj.UUID.toString()))
 	{
 
-		# begin accepting connections
+		# build a runspace
+		$Runspace            = [runspacefactory]::CreateRunspace()
+		$PowerShell          = [powershell]::Create()
+		$PowerShell.runspace = $Runspace
+		$Runspace.Open()
+		[void]$PowerShell.AddScript({
+
 			$client          = $listener.AcceptTcpClient()
 			
 			# add agent to listerner
@@ -57,30 +63,18 @@ Function Global:New-Listerner()
 			# make this work from pipeline: (get lister | set listerner)
 			Set-Listerner -RAWAGENT $agents -AGENTCOUNT $agentCount -UUID $obj.UUID
 		    
-
-			
 			# upgrade agent (maybe auth - tty etc)
 			$Stream = $client.GetStream()
 			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
 			$StreamWriter.WriteLine("TEST") | Out-Null
 		    $StreamWriter.Close()
-			# small sleep to not thrash CPU
-			Start-Sleep -Milliseconds 100
-
-
-
-
-		# build a runspace
-		$Runspace            = [runspacefactory]::CreateRunspace()
-		$PowerShell          = [powershell]::Create()
-		$PowerShell.runspace = $Runspace
-		$Runspace.Open()
-		[void]$PowerShell.AddScript({
-
 			
 		})
 
 		$AsyncObject = $PowerShell.BeginInvoke()
+
+		# small sleep to not thrash CPU
+	    Start-Sleep -Milliseconds 100
 	}
 	$listener.Stop();
 
