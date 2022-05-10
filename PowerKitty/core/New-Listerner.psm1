@@ -75,6 +75,8 @@ Function Global:New-Listerner()
 
 		$AsyncObject = $PowerShell.BeginInvoke()
 	}
+	$listener.Stop();
+
 	
 
 
