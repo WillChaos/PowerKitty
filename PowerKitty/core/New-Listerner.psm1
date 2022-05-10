@@ -52,7 +52,7 @@ Function Global:New-Listerner()
 			
 			# add agent to listerner
 			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
-			$agentCount    = $thisListerner.AGENTCOUNT
+			$agentCount    = $thisListerner.AGENTCOUNT++
 			$agents        = $thisListerner.RAWAGENT += $client
 			Get-Listerner -UUID ($obj.UUID.toString()) | Set-Listerner -RAWAGENT $agents  -AGENTCOUNT $agentCount
 
