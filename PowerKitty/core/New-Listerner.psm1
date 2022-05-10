@@ -54,7 +54,9 @@ Function Global:New-Listerner()
 			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
 			$agentCount    = $thisListerner.AGENTCOUNT++
 			$agents        = $thisListerner.RAWAGENT += $client
-			Get-Listerner -UUID ($obj.UUID.toString()) | Set-Listerner -RAWAGENT $agents  -AGENTCOUNT $agentCount
+			# make this work from pipeline: (get lister | set listerner)
+			Set-Listerner -RAWAGENT $agents  -AGENTCOUNT $agentCount -UUID (Get-Listerner -UUID ($obj.UUID.toString())).UUID.ToString()
+		    
 
 			
 			# upgrade agent (maybe auth - tty etc)

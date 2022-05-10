@@ -3,6 +3,7 @@
 #
 Function Global:Get-Listerner()
 {
+	[CmdletBinding()]
 	param
 	(
 		[Parameter()]
