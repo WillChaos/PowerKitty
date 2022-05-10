@@ -77,10 +77,29 @@ Function Global:New-Listerner()
 				$StreamReader = New-Object System.IO.StreamReader($Stream)
 
 				# if PSK matches, payload
+
+				# TODO: We are working on the below.
+				# we can send data to the client, but when the client sends us data (ReadLine() we can check it agaisnt the PSK)
+				# since its ina  runspace itsd hard to see the error or whats going on. we need to remove the runspace, and then get it to work
+				# i image we need to encode it and then decode when reading?
+
+
+				# below is the ps client im using with the lister: New-Listerner -ListerName test -LPORT 9629 -PSK 123
+				<#
+				$PSK = "123"
+
+				$tcp = New-Object System.Net.Sockets.TcpClient; 
+				$tcp.connect('127.0.0.1', 9629); 
+
+				$tcpStream = $tcp.GetStream()
+				$reader = New-Object System.IO.StreamReader($tcpStream)
+				$writer = New-Object System.IO.StreamWriter($tcpStream)
+				$writer.WriteLine($PSK);
+				$reader.ReadLine()
+				#>
+
 				if($StreamReader.ReadLine() -eq $PSK)
 				{
-					add-Type -AssemblyName PresentationCore,PresentationFramework
-					$Result = [System.Windows.MessageBox]::Show($StreamReader.ReadLine(),"X",1)
 					$StreamWriter.WriteLine("get-service") | Out-Null
 
 				}
