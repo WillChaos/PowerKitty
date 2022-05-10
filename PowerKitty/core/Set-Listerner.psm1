@@ -30,9 +30,9 @@ Function Global:Set-Listerner()
 	{
 		# Get the listerner based on the UUID we are processing
 		$thisListerner = Get-Listerner -UUID $UUID
-		$thisListerner.RAWSOCK    = ($listerner.RAWSOCK    += $RAWSOCK)
-		$thisListerner.AGENTCOUNT = ($listerner.AGENTCOUNT += $AGENTCOUNT)
-		$thisListerner.RAWAGENT   = ($listerner.RAWAGENT   += $RAWAGENT)
+		$thisListerner.RAWSOCK    = ($thisListerner.RAWSOCK    += $RAWSOCK)
+		$thisListerner.AGENTCOUNT = ($thisListerner.AGENTCOUNT += $AGENTCOUNT)
+		$thisListerner.RAWAGENT   = ($thisListerner.RAWAGENT   += $RAWAGENT)
 	}
 		
 
