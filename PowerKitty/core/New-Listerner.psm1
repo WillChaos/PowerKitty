@@ -68,23 +68,27 @@ Function Global:New-Listerner()
 			$PowerShell.runspace = $Runspace
 			$Runspace.Open()
 
+			$Stream = $client.GetStream()
+			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+			$StreamReader = New-Object System.IO.StreamReader($Stream)
+				
+			
+
+			# test stuff
+			
+
 			# build our logic for  onboarding connections
 			[void]$PowerShell.AddScript({
 				
-
-				$Stream = $client.GetStream()
-				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-				$StreamReader = New-Object System.IO.StreamReader($Stream)
+				$StreamWriter.WriteLine("Purr!!!! :)") | Out-Null
 				
-				$StreamWriter.WriteLine("Purr! Welcome to stage one, here is your payload: <TODO>") | Out-Null
-
-				# test stuff
-				$StreamWriter.Close()
-				$StreamReader.Close()
 
 			})
-			$AsyncObject = $PowerShell.BeginInvoke($client)
+			$AsyncObject = $PowerShell.BeginInvoke($StreamWriter)
 			"sock!"
+
+			$StreamWriter.Close()
+			$StreamReader.Close()
 		}
 		
 		# small sleep to not thrash CPU
