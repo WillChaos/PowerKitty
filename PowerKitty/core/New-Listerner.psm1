@@ -67,10 +67,10 @@ Function Global:New-Listerner()
 			
 			# build a runspace
 			$Runspace            = [runspacefactory]::CreateRunspace()
-			$runspace.SessionStateProxy.SetVariable('SW', $StreamWriter)
 			$PowerShell          = [powershell]::Create()
 			$PowerShell.runspace = $Runspace
 			$Runspace.Open()
+			$runspace.SessionStateProxy.SetVariable('SW', $StreamWriter)
 			[void]$PowerShell.AddScript({
 				
 				$SW.WriteLine("Purr!!!! :)") | Out-Null
