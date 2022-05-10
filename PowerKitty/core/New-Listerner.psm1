@@ -67,16 +67,17 @@ Function Global:New-Listerner()
 			
 			# build a runspace
 			$Runspace            = [runspacefactory]::CreateRunspace()
+			$runspace.SessionStateProxy.SetVariable('SW', $StreamWriter)
 			$PowerShell          = [powershell]::Create()
 			$PowerShell.runspace = $Runspace
 			$Runspace.Open()
 			[void]$PowerShell.AddScript({
 				
-				$StreamWriter.WriteLine("Purr!!!! :)") | Out-Null
-				$StreamWriter.Close()
+				$SW.WriteLine("Purr!!!! :)") | Out-Null
+				$SW.Close()
 			})
 
-			$AsyncObject = $PowerShell.BeginInvoke($StreamWriter)
+			$AsyncObject = $PowerShell.BeginInvoke()
 			"sock!"
 
 			
