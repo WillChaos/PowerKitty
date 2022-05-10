@@ -48,9 +48,10 @@ Function Global:New-Listerner()
 	{
 		"1"
 		
-		if($client = $listener.AcceptTcpClient())
+		if($listener.Pending())
 		{
 
+			$client = $listener.AcceptTcpClient()
 
 			# add agent to listerner
 			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
@@ -62,8 +63,7 @@ Function Global:New-Listerner()
 			# upgrade agent (maybe auth - tty etc)
 			$Stream = $client.GetStream()
 			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-			$StreamWriter.WriteLine("TEST") | Out-Null
-			$StreamWriter.Close()
+			
 
 
 			# build a runspace
@@ -73,7 +73,8 @@ Function Global:New-Listerner()
 			$Runspace.Open()
 			[void]$PowerShell.AddScript({
 			
-			
+			$StreamWriter.WriteLine("TEST") | Out-Null
+			$StreamWriter.Close()
 			
 			})
 			$AsyncObject = $PowerShell.BeginInvoke()
