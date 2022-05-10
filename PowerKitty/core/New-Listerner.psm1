@@ -62,8 +62,8 @@ Function Global:New-Listerner()
 			$Stream = $client.GetStream()
 			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
 			$StreamWriter.AutoFlush()
-			$StreamWriter.WriteLine("TEST")
-
+			$StreamWriter.WriteLine("TEST") | Out-Null
+		    $StreamWriter.Close()
 			# small sleep to not thrash CPU
 			Start-Sleep -Milliseconds 100
 
