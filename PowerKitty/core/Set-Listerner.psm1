@@ -12,10 +12,6 @@ Function Global:Set-Listerner()
 		[Object]$UUID,
 
 		# modifiable 
-        [Parameter()]
-		$RAWSOCK,
-
-		# modifiable 
 		[Parameter()]
 		$AGENTCOUNT,
 
@@ -30,9 +26,8 @@ Function Global:Set-Listerner()
 	{
 		# Get the listerner based on the UUID we are processing
 		$thisListerner = Get-Listerner -UUID $UUID
-		$thisListerner.RAWSOCK    += $RAWSOCK
-		$thisListerner.AGENTCOUNT += $AGENTCOUNT
-		$thisListerner.RAWAGENT   += $RAWAGENT
+		$thisListerner.AGENTCOUNT = $AGENTCOUNT
+		$thisListerner.RAWAGENT   = $RAWAGENT
 	}
 		
 
