@@ -60,7 +60,6 @@ Function Global:New-Listerner()
 			# upgrade agent (maybe auth - tty etc)
 			$Stream = $client.GetStream()
 			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-			$StreamWriter.AutoFlush()
 			$StreamWriter.WriteLine("TEST") | Out-Null
 		    $StreamWriter.Close()
 			# small sleep to not thrash CPU
