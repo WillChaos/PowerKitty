@@ -50,13 +50,8 @@ Function Global:New-Listerner()
 		
 		if($client = $listener.AcceptTcpClient())
 		{
-			# build a runspace
-			$Runspace            = [runspacefactory]::CreateRunspace()
-			$PowerShell          = [powershell]::Create()
-			$PowerShell.runspace = $Runspace
-			$Runspace.Open()
-			[void]$PowerShell.AddScript({
-			
+
+
 			# add agent to listerner
 			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
 			$agentCount    = $thisListerner.AGENTCOUNT++
@@ -69,6 +64,16 @@ Function Global:New-Listerner()
 			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
 			$StreamWriter.WriteLine("TEST") | Out-Null
 			$StreamWriter.Close()
+
+
+			# build a runspace
+			$Runspace            = [runspacefactory]::CreateRunspace()
+			$PowerShell          = [powershell]::Create()
+			$PowerShell.runspace = $Runspace
+			$Runspace.Open()
+			[void]$PowerShell.AddScript({
+			
+			
 			
 			})
 			$AsyncObject = $PowerShell.BeginInvoke()
