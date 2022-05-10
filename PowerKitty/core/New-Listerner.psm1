@@ -28,12 +28,12 @@ Function Global:New-Listerner()
 
 	# Create a template listerner object
 	$obj = [pscustomobject]@{
-		Name  = $ListerName
-		UUID  = (New-Guid).Guid
+		Name  = [String]$ListerName
+		UUID  = [String](New-Guid).Guid
 		LHOST = $LHOST
 		LPORT = $LPORT
 		RAWSOCK = $listener
-		AGENTCOUNT = 0
+		AGENTCOUNT = [INT]0
 		RAWAGENT = $null
 	}
 
@@ -47,14 +47,13 @@ Function Global:New-Listerner()
 	while(Get-Listerner -UUID ($obj.UUID.toString()))
 	{
 
-
 		# begin accepting connections
 			$client          = $listener.AcceptTcpClient()
 			
 			# add agent to listerner
 			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
-			$agentCount    = $thisListerner.AGENTCOUNT++
-			$agents        = $thisListerner.RAWAGENTS += $client
+			$agentCount    = $thisListerner.AGENTCOUNT
+			$agents        = $thisListerner.RAWAGENT += $client
 			Get-Listerner -UUID ($obj.UUID.toString()) | Set-Listerner -RAWAGENT $agents  -AGENTCOUNT $agentCount
 
 			
