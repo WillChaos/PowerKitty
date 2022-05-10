@@ -53,8 +53,7 @@ Function Global:New-Listerner()
 		if($client = $listener.AcceptTcpClient())
 		{
 			
-			$Stream = $client.GetStream()
-			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+			
 
 			# add agent to listerner
 			#$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
@@ -70,17 +69,18 @@ Function Global:New-Listerner()
 			$PowerShell          = [powershell]::Create()
 			$PowerShell.runspace = $Runspace
 			$Runspace.Open()
-			$runspace.SessionStateProxy.SetVariable('SW', $StreamWriter)
+			$runspace.SessionStateProxy.SetVariable('C', $client)
 			[void]$PowerShell.AddScript({
 				
-				$SW.WriteLine("Purr!!!! :)") | Out-Null
-				$SW.Close()
+				$Stream = $C.GetStream()
+				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+				$StreamWriter.WriteLine("Purr!!!! :)") | Out-Null
+				$StreamWriter.Close()
 			})
 
 			$AsyncObject = $PowerShell.BeginInvoke()
 			"sock!"
 
-			
 		}
 		
 		# small sleep to not thrash CPU
