@@ -47,14 +47,15 @@ Function Global:New-Listerner()
 	while(Get-Listerner -UUID ($obj.UUID))
 	{
 		"1"
-		# build a runspace
-		$Runspace            = [runspacefactory]::CreateRunspace()
-		$PowerShell          = [powershell]::Create()
-		$PowerShell.runspace = $Runspace
-		$Runspace.Open()
-		[void]$PowerShell.AddScript({
-
-			$client          = $listener.AcceptTcpClient()
+		
+		if($client = $listener.AcceptTcpClient())
+		{
+			# build a runspace
+			$Runspace            = [runspacefactory]::CreateRunspace()
+			$PowerShell          = [powershell]::Create()
+			$PowerShell.runspace = $Runspace
+			$Runspace.Open()
+			[void]$PowerShell.AddScript({
 			
 			# add agent to listerner
 			$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
@@ -67,12 +68,13 @@ Function Global:New-Listerner()
 			$Stream = $client.GetStream()
 			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
 			$StreamWriter.WriteLine("TEST") | Out-Null
-		    $StreamWriter.Close()
+			$StreamWriter.Close()
 			
-		})
-		"2"
-		$AsyncObject = $PowerShell.BeginInvoke()
-		"3"
+			})
+			$AsyncObject = $PowerShell.BeginInvoke()
+			"sock!"
+		}
+		
 		# small sleep to not thrash CPU
 	    Start-Sleep -Milliseconds 100
 		"4"
