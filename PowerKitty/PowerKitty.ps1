@@ -24,7 +24,7 @@ $CurrentOS = [System.Environment]::OSVersion.Platform
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
 # Location for WPS ZIP Master in gitgub
 $MasterLocation = "https://github.com/WillChaos/PowerKitty/archive/refs/heads/master.zip"
-    
+
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 Function Invoke-Banner
 {
