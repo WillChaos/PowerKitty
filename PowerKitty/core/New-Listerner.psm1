@@ -100,7 +100,7 @@ Function Global:New-Listerner()
 				}
 				
 				$Global:AgentPool += $Agent
-
+				$Global:AgentPool
 
 		}
 		if($context.Request.HttpMethod -eq 'GET' -and $context.Request.RawUrl -eq '/')
