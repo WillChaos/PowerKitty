@@ -59,7 +59,7 @@ Function Global:New-Listerner()
 
 	$http = [System.Net.HttpListener]::new() 
 	$http.Prefixes.Add("http://$LHOST`:$LPORT/")
-	$http.Prefixes.Add("http://$LHOST`:$LPORT/agent")
+	$http.Prefixes.Add("http://$LHOST`:$LPORT/agent/")
 	$http.Start()
 
 	while ($http.IsListening) {
