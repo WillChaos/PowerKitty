@@ -73,7 +73,7 @@ Function Global:New-Listerner()
 			# handle websocket (second stage)
 			write-host "Agent connection: $($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
 
-			$wsSync   = $context.AcceptWebSocketAsync().GetAwaiter().GetResult()
+			$wsSync   = $context.AcceptWebSocketAsync($null).GetAwaiter().GetResult()
 			
 			#$ws.WebSocket
 			$websocket = $wsSync.WebSocket
