@@ -59,6 +59,7 @@ Function Global:New-Listerner()
 
 	$http = [System.Net.HttpListener]::new() 
 	$http.Prefixes.Add("http://$LHOST`:$LPORT/")
+	$http.Prefixes.Add("http://$LHOST`:$LPORT/agent")
 	$http.Start()
 
 	while ($http.IsListening) {
@@ -72,10 +73,10 @@ Function Global:New-Listerner()
 			# handle websocket (second stage)
 			write-host "Agent connection: $($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
 
-			$wsSync   = $context.AcceptWebSocketAsync()
-			$wsResult = $wsSync.ConfigureAwait().GetAwaiter().GetResult()
+			$wsSync   = $context.AcceptWebSocketAsync().GetAwaiter().GetResult()
+			
 			#$ws.WebSocket
-			$websocket = $wsResult.WebSocket
+			$websocket = $wsSync.WebSocket
 			
 			$Agent = [PSCustomObject]@{
 					# required information
@@ -103,7 +104,7 @@ Function Global:New-Listerner()
 				$Global:AgentPool
 
 		}
-		if($context.Request.HttpMethod -eq 'GET' -and $context.Request.RawUrl -eq '/')
+		if($context.Request.HttpMethod -eq 'GET' -and $context.Request.RawUrl -eq '/agent')
 		{
 			# handle http get request (first stage)
 			write-host "Staging: $($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
